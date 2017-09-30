@@ -70,6 +70,7 @@ namespace StalkerProject
                 fetch.Index = Math.Max(fetch.Index, conn.ExecuteScalar<int>("select max(ID) from DataItem") + 1);
             fetch.EndIndex = fetch.GetMaxAlbumId();
             fetch.onFetched += onFetched;
+            fetch.onFailed += onFail;
             fetch.Start();
         }
 
