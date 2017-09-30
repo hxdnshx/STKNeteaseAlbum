@@ -9,6 +9,8 @@ using System.IO;
 using NeteaseBirthdayAlbum;
 using Newtonsoft.Json.Linq;
 using SQLite;
+using SQLite.Net;
+using SQLite.Net.Platform.Generic;
 
 namespace StalkerProject
 {
@@ -62,7 +64,7 @@ namespace StalkerProject
                     }
                 }
             }
-            conn = new SQLiteConnection($"{Alias}.db");
+            conn = new SQLiteConnection(new SQLitePlatformGeneric(),$"{Alias}.db");
             conn.CreateTable<DataItem>();
             if (conn.ExecuteScalar<int>("select count(*) from DataItem") > 0)
                 fetch.Index = Math.Max(fetch.Index, conn.ExecuteScalar<int>("select max(ID) from DataItem") + 1);
