@@ -75,6 +75,18 @@ namespace StalkerProject
 
         #endregion
 
+        private int failCount = 0;
+
+        private void onFail(int id)
+        {
+            failCount++;
+            if (failCount % 1000 == 0)
+            {
+                BirthdayMatched?.Invoke($"http://music.163.com/m/album?id={id}",
+                             "获取失败次数已达到" + failCount, $"请检查服务状态", DateTime.Now.ToString());
+            }
+        }
+
         public void HandleHttpRequest(HttpListenerContext request,string SubUrl)
         {
             try
@@ -87,7 +99,7 @@ namespace StalkerProject
                 var ymd = rawurl.Split('/');
                 if (ymd.Length < 3)
                 {
-                    request.ResponseString($"Status : Fetching ID {fetch.Index}");
+                    request.ResponseString($"Status : Fetching ID {fetch.Index}\n FailCount : {failCount}");
                     return;
                 }
                 DateTime date = new DateTime(int.Parse(ymd[0]), int.Parse(ymd[1]), int.Parse(ymd[2]));
@@ -128,9 +140,10 @@ namespace StalkerProject
             {
                 foreach (var birthday in birthdays)
                 {
-                    if (birthday.Year == pubTime.Year &&
-                        birthday.Month == pubTime.Month &&
-                        birthday.Day == pubTime.Day)
+                    var tmp = birthday.AddHours(8);
+                    if (tmp.Year == pubTime.Year &&
+                        tmp.Month == pubTime.Month &&
+                        tmp.Day == pubTime.Day)
                     {
                         BirthdayMatched?.Invoke($"http://music.163.com/m/album?id={id}",
                             "找到了发布日期与生日相同的专辑!", $"是 {name}\t{artist}\t{pubTime}\t{id}", DateTime.Now.ToString());
