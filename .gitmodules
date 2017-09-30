@@ -1,0 +1,3 @@
+[submodule "NeteaseBirthdayAlbum"]
+	path = NeteaseBirthdayAlbum
+	url = https://github.com/hxdnshx/NeteaseAlbumFetch.git
