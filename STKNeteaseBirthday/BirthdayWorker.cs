@@ -77,14 +77,17 @@ namespace StalkerProject
         #endregion
 
         private int failCount = 0;
+        private int succCount = 0;
 
         private void onFail(int id)
         {
             failCount++;
-            if (failCount % 1000 == 0)
+            if (failCount % 10000 == 0)
             {
                 BirthdayMatched?.Invoke($"http://music.163.com/m/album?id={id}",
-                             "获取失败次数已达到" + failCount, $"请检查服务状态", DateTime.Now.ToString());
+                             $"获取失败次数已达到{failCount},成功率{(float)(failCount*100)/(succCount+failCount)}", $"请检查服务状态", DateTime.Now.ToString());
+                failCount = 0;
+                succCount = 0;
             }
         }
 
@@ -100,7 +103,7 @@ namespace StalkerProject
                 var ymd = rawurl.Split('/');
                 if (ymd.Length < 3)
                 {
-                    request.ResponseString($"Status : Fetching ID {fetch.Index}\n FailCount : {failCount}");
+                    request.ResponseString($"Status : Fetching ID {fetch.Index}\n FailCount : {failCount} SuccessCount:{succCount}");
                     return;
                 }
                 DateTime date = new DateTime(int.Parse(ymd[0]), int.Parse(ymd[1]), int.Parse(ymd[2])).AddHours(-8);//chn to utc
@@ -139,6 +142,7 @@ namespace StalkerProject
         {
             try
             {
+                succCount++;
                 foreach (var birthday in birthdays)
                 {
                     var tmp = birthday.AddHours(-8);//to utc(chn)
