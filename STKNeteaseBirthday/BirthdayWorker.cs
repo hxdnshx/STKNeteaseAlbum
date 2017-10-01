@@ -103,7 +103,7 @@ namespace StalkerProject
                     request.ResponseString($"Status : Fetching ID {fetch.Index}\n FailCount : {failCount}");
                     return;
                 }
-                DateTime date = new DateTime(int.Parse(ymd[0]), int.Parse(ymd[1]), int.Parse(ymd[2]));
+                DateTime date = new DateTime(int.Parse(ymd[0]), int.Parse(ymd[1]), int.Parse(ymd[2])).AddHours(-8);//chn to utc
                 long src = date.ToUnixTime();
                 long dst = date.AddDays(1).ToUnixTime();
                 var results = from p in conn.Table<DataItem>()
@@ -141,7 +141,7 @@ namespace StalkerProject
             {
                 foreach (var birthday in birthdays)
                 {
-                    var tmp = birthday.AddHours(8);
+                    var tmp = birthday.AddHours(-8);//to utc(chn)
                     if (tmp.Year == pubTime.Year &&
                         tmp.Month == pubTime.Month &&
                         tmp.Day == pubTime.Day)
