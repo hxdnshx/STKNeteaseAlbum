@@ -18,6 +18,7 @@ namespace StalkerProject
     {
 
         public string BirthdaysFile { get; set; }
+        public int StartIndex { get; set; }
         private List<DateTime> birthdays;
         private NeteaseAlbumFetch fetch;
         private SQLiteConnection conn;
@@ -66,6 +67,7 @@ namespace StalkerProject
             }
             conn = new SQLiteConnection(new SQLitePlatformGeneric(),$"{Alias}.db");
             conn.CreateTable<DataItem>();
+            fetch.Index = Math.Max(fetch.Index, StartIndex);
             if (conn.ExecuteScalar<int>("select count(*) from DataItem") > 0)
                 fetch.Index = Math.Max(fetch.Index, conn.ExecuteScalar<int>("select max(ID) from DataItem") + 1);
             fetch.EndIndex = fetch.GetMaxAlbumId();
@@ -127,10 +129,13 @@ namespace StalkerProject
                         };
                     result.Add(info);
                 }
+                /*
                 request.ResponseString(
                     "<html><head><meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" /></head><body>" +
                     obj.ToString().Replace("\n", "<br>") +
                     "</body></html>");
+                    */
+                request.ResponseString(obj.ToString());
             }
             catch (Exception e)
             {
